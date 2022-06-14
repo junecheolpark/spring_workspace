@@ -1,0 +1,24 @@
+package com.kh.intro;
+
+public class LgLaptop {
+
+	public LgLaptop() {
+		System.out.println("삼성 노트북 인스턴스 생성");
+	}
+	
+	//전원on/off 볼륨up/down
+	
+	
+	public void turnOn() {
+		System.out.println("전원 on");
+	}
+	public void turnOff() {
+		System.out.println("전원 off");
+	}
+	public void soundUp() {
+		System.out.println("볼륨 up");
+	}
+	public void soundDown() {
+		System.out.println("볼륨 down");
+	}
+}

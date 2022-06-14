@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<!--  BeanFactory 클래스처럼 인스턴스를 찍어내는 작업을 클래스가 아닌
+여기 applicationContext.xml 파일에서 할것
+	<bean> 직접 등록(인스턴스, 클래스, 객체)
+	id : 생성하고자 하는 인스턴스의 이름
+	class : 생성하고자 하는 인스턴스 클래스의 경로값
+-->
+<!-- 스프링 프로젝트를 실행시켰을 떄 스프링 컨테이너가 실행됨
+스프링 컨테이너 : 프레임워크에서 관리하는 인스턴스, 리소스 등을 담고있는 바구니
+-> 아래쪽에 bean 태그를 이용해 등록하겠다고 선언한 클래스의 인스턴스를 생성해 스프링 컨테이너 안에 담아줌. -->
+<bean id="samsung" class="com.kh.intro.SamsungLaptop"/>
+
+</beans>
+<!-- 
+	html : body, html, p .... 정해진 태그자/
+	xml : 정해진 태그 x/ 데이터 전달/ 설명하는 용도 -> 설정 파일,공공데이터(다량 데이터를 다룰때)
+	
+ -->

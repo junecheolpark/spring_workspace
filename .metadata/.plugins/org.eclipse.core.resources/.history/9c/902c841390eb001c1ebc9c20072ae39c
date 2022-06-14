@@ -1,0 +1,12 @@
+package com.kh.intro;
+
+public class BeanFactory {
+	public .. getBean(String name){
+		if(name.equals("lg")) {//lg인스턴스반환
+			
+		}else if(name.equals("samsung")) {//samsung인스턴스반환
+			
+		}
+	}
+
+}
