@@ -1,6 +1,7 @@
 package com.message.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -121,7 +122,7 @@ public class HomeController {
 			model.addAttribute("list", list);
 		return "output";
 	}
-	
+	/*
 	@RequestMapping(value = "/toOutput2") // output페이지로 이동
 	public String toOutput2(Model model)throws Exception {
 		System.out.println("toOutput2 요청");
@@ -130,6 +131,7 @@ public class HomeController {
 			model.addAttribute("list", list);
 		return "output2";
 	}
+	*/
 
 	@RequestMapping(value = "/delete")
 	public String delete(int no) throws Exception{
@@ -138,6 +140,19 @@ public class HomeController {
 			dao.delete(no);
 		return "redirect:/toOutput";
 
+	}
+	
+	@RequestMapping(value = "/toOutput2")
+	public String toOutput2() throws Exception{ // output2페이지로 이동
+		System.out.println("toOutput2 요청");
+		return "output2";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/outputAjax")
+	public ArrayList<MessageDTO> outputAjax()throws Exception{ // ajax로 메세지 데이터 요청
+		ArrayList<MessageDTO> list = dao.selectAll();
+		return list;
 	}
 	
 	// ajax요청값에 대한 반환 -> annotation (@ResponseBody)
@@ -150,9 +165,26 @@ public class HomeController {
 	@RequestMapping(value = "deleteAjax")//ajax 삭제 요청
 	public String deleteAjax(int no)throws Exception{
 		System.out.println("삭제할 no " + no);
-		 dao.delete(no);
-		return "success";
+		 int rs = dao.delete(no);
+		 if(rs>0) {// 삭제시 정상적으로 수행
+			 return "success";
+		 }else{
+			 return "fail";
+		 }
+	
+		
 	}
+	/*
+	 * @ResponseBody
+	 * 
+	 * @RequestMapping(value = "deleteAjax")//ajax 삭제 요청 public HashMap<String,
+	 * Object> deleteAjax(int no)throws Exception{ System.out.println("삭제할 no " +
+	 * no); // dao.delete(no); MessageDTO dto = dao.oneSelect(no);
+	 * ArrayList<MessageDTO> list = dao.selectAll(); // dto와 list를 한번에 반환해야 하는 경우/
+	 * 다른 종류의 list 2개를 한번에 반환햐아하는 경우 // 결과적으로 몇개의, 어떤 종류의 데이터를 반환하던 반환값은 딱 하나 // Map
+	 * 을 이용해 각각의 데이터를 담아 줄것. HashMap<String, Object> map = new HashMap<>();
+	 * map.put("dto", dto); map.put("list", list); return map; }
+	 */
 
 	@RequestMapping(value = "/toModify")
 	public String modify(int no, Model model) throws Exception{
