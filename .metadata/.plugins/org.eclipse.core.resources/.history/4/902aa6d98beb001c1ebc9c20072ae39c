@@ -1,8 +1,0 @@
-package com.kh.intro;
-
-public class Run {
-//우리회사가 samsung 계약
-	//laptop 생산
-	SamsungLaptop samsung = new SamsungLaptop();
-	samsung.powerOn();
-}

@@ -2,6 +2,10 @@
 <qualifiedTypeNameHistroy>
     <fullyQualifiedTypeName name="com.kh.intro.SamsungLaptop"/>
     <fullyQualifiedTypeName name="org.springframework.context.support.GenericXmlApplicationContext"/>
-    <fullyQualifiedTypeName name="java.lang.StringIndexOutOfBoundsException"/>
     <fullyQualifiedTypeName name="javax.servlet.http.HttpServletRequest"/>
+    <fullyQualifiedTypeName name="java.util.UUID"/>
+    <fullyQualifiedTypeName name="java.lang.StringIndexOutOfBoundsException"/>
+    <fullyQualifiedTypeName name="java.sql.Connection"/>
+    <fullyQualifiedTypeName name="org.apache.commons.dbcp2.BasicDataSource"/>
+    <fullyQualifiedTypeName name="kh.board.member.MemberDAO"/>
 </qualifiedTypeNameHistroy>

@@ -21,6 +21,8 @@
 <title>메인</title>
 </head>
 <body>
+	
+	<form id="loginForm" action="/member/toLogin" method="get">
 	<div class="container">
 		<div class="row">
 			<div class="col text-center">
@@ -32,7 +34,7 @@
 		</div>
 		<div class="row">
 			<div class="col">
-				<input type="text" class="form-control" name="id">
+				<input type="text" class="form-control" id="id" name="id">
 			</div>
 		</div>
 
@@ -41,7 +43,7 @@
 		</div>
 		<div class="row">
 			<div class="col">
-				<input type="password" class="form-control" name="pw">
+				<input type="password" class="form-control"id="pw" name="pw">
 			</div>
 		</div>
 
@@ -55,14 +57,34 @@
 	</div>
 	<div class="row">
 		<div class="col text-center">
-			<button type="button" class="btn btn-primary">로그인</button>
+			<button type="button" class="btn btn-primary" id="toLogin">로그인</button>
 			<button type="button" class="btn btn-warning" id="signUp">회원가입</button>
 		</div>
 	</div>
-
+	</form>
 	<script>
+	//회원가입 페이지
 		document.getElementById("signUp").onclick = function() {
 			location.href = "/member/toSignUp"; // member∼ 로 시작하는
+		}
+		
+		// 로그인 요청 
+		document.getElementById("toLogin").onclick = function(){
+			$.ajax({
+				url : "/member/toLogin"
+				,type : "post"
+				,data : {id : $("#id").val(), pw : $("#pw").val()}
+				, success: function(data){
+					console.log(data);
+					if(data == "success"){
+						location.href = "/member/toWelcome";
+					}else if(data == "fail"){
+						alert("아이디 혹은 비밀번호가 일치하지 않습니다.");
+					}
+				}, error : function(e){
+					console.log(e);
+				}
+			})
 		}
 		
 	</script>

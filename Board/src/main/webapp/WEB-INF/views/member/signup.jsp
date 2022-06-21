@@ -59,10 +59,10 @@
 				<div class="col-12 my-2">아이디</div>
 
 				<div class="col-12">
-					<input type="text" class="form-control" name="id">
+					<input type="text" class="form-control" id="user_id" name="id">
 				</div>
 				<div class="col mt-2" align="right">
-					<button type="button" class="btn btn-danger float-right">중복
+					<button type="button" class="btn btn-danger float-right" id="idCheckBtn">중복
 						확인</button>
 				</div>
 			</div>
@@ -72,7 +72,7 @@
 					<p>비밀번호</p>
 				</div>
 				<div class="col-12">
-					<input type="password" class="form-control" name="pw">
+					<input type="password" class="form-control" id="user_pw" name="pw">
 				</div>
 			</div>
 
@@ -81,7 +81,7 @@
 					<p>닉네임</p>
 				</div>
 				<div class="col-12">
-					<input type="text" class="form-control" name="nickname">
+					<input type="text" class="form-control" id="user_nickname" name="nickname">
 				</div>
 			</div>
 
@@ -89,7 +89,7 @@
 		<div class="row">
 			<div class="col text-center mt-2">
 				<button type="button" class="btn btn-secondary" id="cancel">취소</button>
-				<button type="submit" class="btn btn-primary">가입</button>
+				<button type="submit" class="btn btn-primary" id="signBtn">가입</button>
 			</div>
 		</div>
 	</form>
@@ -115,6 +115,63 @@
 		document.getElementById("cancel").onclick = function() {
 			location.href = "/";
 		}
+		//아이디 체크
+		$("#idCheckBtn").on("click", function(){
+			let user_id = $("#user_id").val();
+			console.log(user_id);
+
+            $.ajax({
+                url: "/member/idCheck", // ID중복체크
+                type: "post",
+                data: {id :user_id},
+                success: function (data) {
+                	console.log(data);
+                	if (data > 0) {   
+                		alert("사용가능한 아이디입니다.");
+                		
+                	}else{
+                		alert("아이디가 존재합니다. 다른 아이디를 입력해주세요.");
+                	}
+                },
+                error: function(e){
+					console.log(e);
+				}
+            });
+		})
+		//중복, 정규식 검사
+		$("#signBtn").on("click", function(){
+            let regexId = /[a-zA-Z0-9]{6,12}/;
+            let regexPw = /^[a-zA-Z0-9]{6,20}$/
+            let regexNickname = /^[a-zA-Z0-9ㄱ-힣]{4,10}$/
+
+            if ($("#user_id").val() === ""){
+                alert("아이디를 입력해 주세요.");
+				$('#user_id').focus();
+				return;
+            }else if (!regexId.test($("#user_id").val())) {
+				alert("형식에 맞지않는 아이디입니다.");
+				$('#user_pw').focus();
+				return;
+			}else if ($("#user_pw").val() === ""){
+                alert("비밀번호를 입력해 주세요.");
+				$('#user_pw').focus();
+				return;
+            }else if (!regexPw.test($("#user_pw").val())) {
+				alert("형식에 맞지않는 비밀번호입니다.");
+				$('#user_pw').focus();
+				return;
+			}else if ($("#user_nickname").val() === ""){
+                alert("닉네임을 입력해 주세요.");
+				$('#user_nickname').focus();
+				return;
+            }else if (!regexNickname.test($("#user_pw").val())) {
+				alert("형식에 맞지않는 닉네임입니다.");
+				$('#user_nickname').focus();
+				return;
+			}
+          
+            document.getElementById("signupForm").submit();
+        })
 	</script>
 </body>
 </html>
