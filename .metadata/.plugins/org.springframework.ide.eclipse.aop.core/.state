@@ -5,4 +5,5 @@
 <aop-project name="SpringIntro"/>
 <aop-project name="Intro"/>
 <aop-project name="Message"/>
+<aop-project name="BoardSam"/>
 </aop-reference-model>
