@@ -1,8 +1,5 @@
 package kh.board.member;
 
-import java.io.File;
-import java.util.UUID;
-
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +18,18 @@ public class MemberController {
 	 */
 	@Autowired
 	private MemberService service;
+	@Autowired
+	private HttpSession session;
 
 	@RequestMapping(value = "/toSignUp")
 	public String toInput() {
 		System.out.println("toInput 요청");
 		return "member/signup";
 	}
-	
-	@RequestMapping(value = "/toWelcome")//welcome페이지 요청
+
+	@RequestMapping(value = "/toWelcome") // welcome페이지 요청
 	public String toWelcome() {
+		System.out.println("welcom접속");
 		return "member/welcome";
 	}
 
@@ -42,43 +42,90 @@ public class MemberController {
 		System.out.println(dto.toString());
 		System.out.println("file : " + file);
 		String realPath = session.getServletContext().getRealPath("profile");
-		System.out.println("realPath" + realPath);
-		service.signup(dto, file, realPath);
+		String profile_image = service.uploadProfile(file, realPath);
+		dto.setProfile_image(profile_image);
+		service.signup(dto);
 		return "redirect:/";
 
 	}
 
-	
-	//로그인
+	@RequestMapping(value = "/modifyProfile") // 프로필 수정 요청
+	@ResponseBody
+	public String modifyProfile(String profile_message, MultipartFile file) throws Exception {
+		System.out.println("message:" + profile_message);
+		System.out.println("file :" + file);
+
+		// 1. 서버의 profile 폴더에 새로운 프로필 사진 업로드
+		// 만약 사용자가 프로필사진을 변경하지 않았다면(업로드 x)
+		// 새로운 프로필 사진을 업로드 x
+		if (!file.isEmpty()) {
+			String realPath = session.getServletContext().getRealPath("profile");
+			// 파이을 업로드하는 service의 메서드를 호출하고 반환값으로 실제 저장된 파일명을 반환
+			String profile_image = service.uploadProfile(file, realPath);
+			// loginSession 안에 들어있는 dto의 profile_image 멤버필드 값을 새롭게 업로드된 파일명으로 변경
+			((MemberDTO) session.getAttribute("loginSession")).setProfile_image(profile_image);
+		} // 만약 사용자가 프로필 사진 수정을 안했다면(파일 업로드 x) 원래의 값을 유지
+			// loginSession에 DTO -> profile_image -> 사용자가 원래가지고있는 프로필사진의 이름값
+
+		// 넘어온 변경된 프로필 메서지도 loginSession의 dto에 다시셋팅
+		((MemberDTO) session.getAttribute("loginSession")).setProfile_message(profile_message);
+		// 2. member테이블의 현재 프로필 수정중인 메버의 데이터를 수정
+		int rs = service.modifyProfile((MemberDTO) session.getAttribute("loginSession"));
+		if (rs > 0) {
+			return "success";
+		} else {
+			return "fail";
+		}
+
+	}
+
+
+	@RequestMapping(value = "/modify_nickname") // 프로필 수정 요청
+	@ResponseBody
+	public String modify_nickname(String nickname, String id) throws Exception{
+		System.out.println(id + nickname);
+		((MemberDTO) session.getAttribute("loginSession")).setNickname(nickname);
+		int rs = service.modifyProfile((MemberDTO) session.getAttribute("loginSession"));
+		if (rs > 0) {
+			return "success";
+		} else {
+			return "fail";
+		}
+		
+	}
+	// 로그인
 	@ResponseBody
 	@RequestMapping(value = "/toLogin")
 	public String idCheck(String id, String pw) throws Exception {
 		System.out.println("로그인 요청");
 		System.out.println(id + pw);
 		MemberDTO dto = service.login(id, pw);
-		System.out.println(dto);
-		 if(dto != null) {
-			 return "success";
-		 }else{
-			 return "fail";
-		 }
-		
+
+		if (dto != null) {
+			session.setAttribute("loginSession", dto);
+			System.out.println(dto);
+			return "success";
+		} else {
+			return "fail";
+		}
+
 	}
-	//아이디 중복체크
+
+	// 아이디 중복체크
 	@ResponseBody
 	@RequestMapping(value = "/idCheck")
 	public String idCheck(String id) throws Exception {
 		System.out.println("idCheck 요청");
 		boolean count = service.idCheck(id);
 		System.out.println("count: " + count);
-		 if(count) {
-			 return "1";
-		 }else{
-			 return "0";
-		 }
-		
+		if (count) {
+			return "1";
+		} else {
+			return "0";
+		}
+
 	}
-	
+
 	@ExceptionHandler
 	public String toError(Exception e) {
 		System.out.println("예외 발생");

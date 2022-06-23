@@ -22,6 +22,7 @@
 			/resources/images/a.jsp  -->
 	
 	<resources mapping="/resources/**" location="/resources/" />
+	<resources mapping="/profile/**" location="/profile/"/>
 
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -36,6 +37,23 @@
 		<beans:property name="maxUploadSize" value="10485760"></beans:property> <!-- 최대파일크기 10MB -->
 	</beans:bean>
 	
-	
+	<!-- 로그인 검사 인터셉터 등록 -->
+		<!-- <interceptor>
+			1. 어떤 요청 url과 매핑시켜줄건지.
+			2. 어떤 인터셉터 클래스를 사용할건지 빈 등록 
+			3. 만약 인터셉터가 동작할 필요가 없는 요청값이라면 그 url은 제외-->
+	<interceptors>
+		<interceptor>
+			<mapping path="/**"/>
+			<exclude-mapping path="/"/>
+			<exclude-mapping path="/resources/**"/><!-- 이미지 -->
+			<exclude-mapping path="/member/signup"/>
+			<exclude-mapping path="/member/toSignUp"/>
+			<exclude-mapping path="/member/toLogin"/>
+			<exclude-mapping path="/member/idCheck"/>
+			<exclude-mapping path="/toError"/>
+			<beans:bean class="kh.boad.utils.AuthLogininterceptor"/>
+		</interceptor>
+	</interceptors>
 	
 </beans:beans>

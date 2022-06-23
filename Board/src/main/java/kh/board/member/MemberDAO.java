@@ -50,7 +50,7 @@ public class MemberDAO {
 			}
 		}
 	}
-
+	//로그인체크
 	public MemberDTO login(String id, String pw) throws Exception {
 		String sql = "select * from member where id = ? and pw = ?";
 
@@ -69,5 +69,29 @@ public class MemberDAO {
 			}
 			return null;
 		}
+	}
+	
+	// 프로필 수정
+	public int modifyProfile(MemberDTO dto) throws Exception{
+		String sql = "update member set profile_message=?, profile_image= ? where id=?";
+		try (Connection con = bds.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
+			
+			pstmt.setString(1,  dto.getProfile_message());
+			pstmt.setString(2,  dto.getProfile_image());
+			pstmt.setString(3,  dto.getId());
+			return pstmt.executeUpdate();
+		}
+		
+	}
+	// 닉네임 수정
+	public int modify_nickname(MemberDTO dto) throws Exception{
+		String sql = "update member set nickname=? where id=?";
+		try (Connection con = bds.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
+			
+			pstmt.setString(1,  dto.getNickname());
+			pstmt.setString(2,  dto.getId());
+			return pstmt.executeUpdate();
+		}
+		
 	}
 }

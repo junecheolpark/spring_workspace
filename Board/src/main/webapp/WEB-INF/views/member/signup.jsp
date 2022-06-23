@@ -58,7 +58,7 @@
 			<div class="row">
 				<div class="col-12 my-2">아이디</div>
 
-				<div class="col-12">
+				<div class="col-12 text-align:center">
 					<input type="text" class="form-control" id="user_id" name="id">
 				</div>
 				<div class="col mt-2" align="right">
