@@ -19,7 +19,6 @@ public class AuthLogininterceptor implements HandlerInterceptor{
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)throws Exception{
 		System.out.println("로그인 검사 인터셉터 도착");
-		System.out.println(request.getSession().getAttribute("loginSession"));
 		if(request.getSession().getAttribute("loginSession") == null) {
 			// 사용자 로그인이 안되어있음.
 			System.out.println("로그인 암됨 ㅡㅡ");

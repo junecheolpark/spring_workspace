@@ -20,6 +20,12 @@ public class MemberController {
 	private MemberService service;
 	@Autowired
 	private HttpSession session;
+	
+	@RequestMapping(value = "/logout")//logout페이지 요청
+	public String logout() {
+		session.removeAttribute("loginSession");
+		return "redirect:/";
+	}
 
 	@RequestMapping(value = "/toSignUp")
 	public String toInput() {
@@ -69,7 +75,7 @@ public class MemberController {
 
 		// 넘어온 변경된 프로필 메서지도 loginSession의 dto에 다시셋팅
 		((MemberDTO) session.getAttribute("loginSession")).setProfile_message(profile_message);
-		// 2. member테이블의 현재 프로필 수정중인 메버의 데이터를 수정
+		// 2. member테이블의 현재 프로필 수정중인 멤버의 데이터를 수정
 		int rs = service.modifyProfile((MemberDTO) session.getAttribute("loginSession"));
 		if (rs > 0) {
 			return "success";
@@ -85,7 +91,7 @@ public class MemberController {
 	public String modify_nickname(String nickname, String id) throws Exception{
 		System.out.println(id + nickname);
 		((MemberDTO) session.getAttribute("loginSession")).setNickname(nickname);
-		int rs = service.modifyProfile((MemberDTO) session.getAttribute("loginSession"));
+		int rs = service.modify_nickname((MemberDTO) session.getAttribute("loginSession"));
 		if (rs > 0) {
 			return "success";
 		} else {

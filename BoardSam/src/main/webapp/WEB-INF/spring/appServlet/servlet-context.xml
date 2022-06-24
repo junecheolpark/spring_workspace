@@ -27,7 +27,8 @@
 		resource를 정상적으로 가져올 수 있게끔 url을 매핑시켜주는 역할 
 	 -->
 	<resources mapping="/resources/**" location="/resources/" />
-
+	<resources mapping="/profile/*" location="/profile/"/>
+	
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<beans:property name="prefix" value="/WEB-INF/views/" />
@@ -40,6 +41,28 @@
 	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<beans:property name="maxUploadSize" value="10485760"></beans:property> <!-- 최대파일크기 10MB -->
 	</beans:bean>
+	
+	<!-- 로그인 검사 인터셉터 등록 -->
+	<!--  <interceptor>
+			1. 어떤 요청 url과 매핑시켜줄건지. 
+			/** 모든 요청값에 매핑
+			2. 어떤 인터셉터 클래스를 사용할건지 빈 등록
+			3. 만약 인터셉터가 동작할 필요가 없는 요청값이라면 그 url은 제외
+			path -> 이 경로는 클라이언트를 기준으로 url을 생각해야함 
+	</interceptor> -->
+	<interceptors>
+		<interceptor>
+			<mapping path="/**"/>
+			<exclude-mapping path="/"/>
+			<exclude-mapping path="/resources/**"/>
+			<exclude-mapping path="/member/login"/>
+			<exclude-mapping path="/member/toSignup"/>
+			<exclude-mapping path="/member/checkLogin"/>
+			<exclude-mapping path="/member/signup"/>
+			<exclude-mapping path="/toError"/>
+			<beans:bean class="kh.board.utils.AuthLoginInterceptor"/>
+		</interceptor>
+	</interceptors>
 	
 	
 </beans:beans>

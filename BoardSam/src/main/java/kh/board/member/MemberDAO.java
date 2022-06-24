@@ -44,6 +44,30 @@ public class MemberDAO {
 		}
 	}
 
+	// 프로필 수정
+	public int modifyProfile(MemberDTO dto) throws Exception{
+		String sql = "update member set profile_message=?, profile_image=? where id=?";
+		try(Connection con = bds.getConnection();
+			PreparedStatement pstmt = con.prepareStatement(sql)){
+			
+			pstmt.setString(1, dto.getProfile_message());
+			pstmt.setString(2, dto.getProfile_image());
+			pstmt.setString(3, dto.getId());
+			return pstmt.executeUpdate();			
+		}
+	}
+	
+	// 정보 수정
+	public int modifyInfo(String id, String nickname) throws Exception {
+		String sql = "update member set nickname=? where id=?";
+		try(Connection con = bds.getConnection();
+			PreparedStatement pstmt = con.prepareStatement(sql)){
+			pstmt.setString(1, nickname);
+			pstmt.setString(2, id);
+
+			return pstmt.executeUpdate();
+		}
+	}
 
 	// 회원가입
 	public int insert(MemberDTO dto) throws Exception{

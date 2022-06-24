@@ -36,30 +36,27 @@ public class MemberService {
 		return dao.checkLogin(id);
 	}
 	
-	public int signup(MemberDTO dto, MultipartFile file, String realPath) throws Exception{
+	public int signup(MemberDTO dto) throws Exception{
+		return dao.insert(dto);
+	}
+	
+	public String uploadProfile(MultipartFile file, String realPath) throws Exception{
 		File realPathFile = new File(realPath);
 		if(!realPathFile.exists()) realPathFile.mkdir();
-		/* 파일 데이터는 MultipartFile 형 변수로 받아줌.
-		 * MultipartFile 형 변수의 이름은 클라이언트에서 넘겨주는 파일태그의 이름
-		 * MultipartFile을 받아줄때에는 반드시 함께 받아주는 일반데이터의 멤버필드명과 겹치지 않도록 함. 
-		 * */
-		
-		if(!file.isEmpty()) { // 클라이언트로부터 넘어 온 파일이 있다면
-			// 우리가 직접 만들어준 sys_name 을 이용해 파일을 업로드할 것.
-			/* UUID (고유식별값) 
-			 *  ori_name 활용
-			 *  ~~~~_ori_name */
+		String sys_name = null;
+		if(!file.isEmpty()) {
 			String ori_name = file.getOriginalFilename();
-			System.out.println("ori_name : " + ori_name);
-			String sys_name = UUID.randomUUID() + "_" + ori_name;
-			System.out.println("sys_name : " + sys_name);
-			// transferTo(실제 파일이 저장될 full 경로->파일 객체를 이용) -> MultipartFile객체가 담고 있는 
-			// 파일데이터를 인자값으로 넘겨준 경로에 실제 저장(업로드)해주는 역할을 함. 
+			sys_name = UUID.randomUUID() + "_" + ori_name;
 			file.transferTo(new File(realPath + File.separator + sys_name));
-			
-			dto.setProfile_image(sys_name); // dto에 프로필 경로도 셋팅해주기
 		}
-		// pw 암호화 적용 
-		return dao.insert(dto);
+		return sys_name;
+	}
+	
+	public int modifyProfile(MemberDTO dto) throws Exception{
+		return dao.modifyProfile(dto);
+	}
+	
+	public int modifyInfo(String id, String nickname) throws Exception{
+		return dao.modifyInfo(id, nickname);
 	}
 }

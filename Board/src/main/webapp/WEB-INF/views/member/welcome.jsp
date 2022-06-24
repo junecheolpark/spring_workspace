@@ -96,7 +96,7 @@
 					<button type="button" class="btn btn-primary" id="changeProfile">프로필변경</button>
 					<button type="button" class="btn btn-primary d-none"
 						id="saveProfile">프로필저장</button>
-					<button type="button" class="btn btn-secondary" id="logout">로그아웃</button>
+					<button type="button" class="btn btn-secondary" id="toLogout">로그아웃</button>
 					<%-- 내정보 모달 띄워줌 --%>
 					<button type="button" class="btn btn-warning"
 						data-bs-toggle="modal" data-bs-target="#exampleModal">내정보</button>
@@ -112,7 +112,7 @@
 								</div>
 								<div class="modal-body">
 									<div class="row ">
-										<form>
+										<form id="nickForm">
 											<div class="col-12">아이디</div>
 											<div class="col my-2">
 												<input type="text" class="form-control" id="id" name="id"
@@ -131,7 +131,7 @@
 												name="nickname" value="${loginSession.nickname}" readonly>
 										</div>
 									</div>
-									<%-- 모달 끝--%>
+									
 								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-secondary"
@@ -139,19 +139,29 @@
 									<button type="button" class="btn btn-warning"
 										id="modify_nickname">수정</button>
 									<button type="button" class="btn btn-primary d-none"
-										id="complet_nickname" >완료</button>
+										id="complet_nickname">완료</button>
 								</div>
 							</div>
 						</div>
 					</div>
-
-					<button type="button" class="btn btn-success">게시판</button>
+					<%-- 모달 끝--%>
+					<button type="button" class="btn btn-success" id="toBoard">게시판</button>
 				</div>
 			</div>
 		</form>
 	</div>
 
 	<script>
+		// 로그아웃 요청
+		$("#toLogout").click(function() {
+			location.href = "/member/logout";
+		})
+
+		// 게시판 페이지 요청
+		$("#toBoard").click(function() {
+			location.href = "/board/toBoard";
+		})
+
 		//내정보 수정 눌렀을때
 		$("#modify_nickname").on("click", function() {
 			$("#nickname").attr({
@@ -170,30 +180,34 @@
 			$("#complet_nickname").addClass("d-none");
 
 		})
-		
+
 		// 정보수정
-		
-		$("#complet_nickname").on("click", function(){
+
+		$("#complet_nickname").on("click", function() {
 			let id = $("#id").val();
 			let nickname = $("#nickname").val();
+			console.log(id, nickname);
 
 			$("#exampleModal").modal('hide');
-             $.ajax({
-                url: "/member/modify_nickname", // ID중복체크
-                type: "post",
-                data: {id :id, nickname :nickname},
-                success: function (data) {
-                	console.log(data);
+			$.ajax({
+				url : "/member/modify_nickname",
+				type : "post",
+				data : {
+					id : id,
+					nickname : nickname
+				},
+				success : function(data) {
+					console.log(data);
 					if (data == "success") {
 						alert("수정 성공");
 					} else if (data == "fail") {
 						alert("수정 실패. 다시 ㄱㄱ");
 					}
-                },
-                error: function(e){
+				},
+				error : function(e) {
 					console.log(e);
 				}
-            }); 
+			})
 		})
 
 		// 프로필 저장버튼을 클릭했을때

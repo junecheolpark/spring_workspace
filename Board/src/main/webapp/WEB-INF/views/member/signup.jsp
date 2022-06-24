@@ -89,7 +89,7 @@
 		<div class="row">
 			<div class="col text-center mt-2">
 				<button type="button" class="btn btn-secondary" id="cancel">취소</button>
-				<button type="submit" class="btn btn-primary" id="signBtn">가입</button>
+				<button type="button" class="btn btn-primary" id="signBtn">가입</button>
 			</div>
 		</div>
 	</form>
