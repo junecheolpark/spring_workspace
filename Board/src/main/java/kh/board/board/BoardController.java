@@ -57,12 +57,15 @@ public class BoardController {
 
 	@RequestMapping(value = "/detail") // detail페이지 요청
 	public String write(String title, int seq_board, Model model) throws Exception {
-
+		System.out.println(seq_board);
 		service.veiw_countUp(title);
 		BoardDTO dto = service.detailView(title);
 		model.addAttribute("dto", dto);
-		ArrayList<FileDTO> filelist = fileService.look_img(seq_board);
-		model.addAttribute("filelist", filelist);
+		System.out.println(dto);
+		ArrayList<FileDTO> list = fileService.look_img(seq_board);
+		System.out.println(list);
+		model.addAttribute("filelist", list);
+		
 
 		return "/board/detail";
 	}

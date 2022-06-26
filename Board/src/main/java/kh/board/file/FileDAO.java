@@ -40,7 +40,6 @@ public class FileDAO {
 		String sql = "select*from tbl_file where seq_board=?";
 		try (Connection con = bds.getConnection(); 
 				PreparedStatement pstmt = con.prepareStatement(sql)) {
-			
 			pstmt.setInt(1, seq_board);
 			ResultSet rs = pstmt.executeQuery();
 			ArrayList <FileDTO> list = new ArrayList<>();
@@ -50,7 +49,7 @@ public class FileDAO {
 				String content_image = rs.getString("content_image");
 				list.add(new FileDTO(seq_file, seq_board, content_image));
 			}
-			return null;
+			return list;
 		}
 	}
 

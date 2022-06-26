@@ -22,9 +22,16 @@
 
 <title>상세페이지</title>
 </head>
+<style>
+#profile_image {
+	width: 300px;
+	height: 300px;
+	border-radius: 50%;
+}
+</style>
 <body>
-<img src="/profile/${filelist.content_image}"
-								id="profile_image">
+
+
 	<div class="container">
 		<form id="writeForm" action="/board/write" method="post"
 			enctype="multipart/form-data">
@@ -36,6 +43,9 @@
 			<div class="row text-center">
 				<div class="text-center">
 					<h3>글쓰기</h3>
+					<c:forEach items="${filelist}" var="filelist">
+						<img src="/profile/${filelist.content_image}" id="profile_image">
+					</c:forEach>
 				</div>
 
 
@@ -93,7 +103,7 @@
 			<div class="row">
 				<div class="col text-center mt-2">
 					<button type="button" class="btn btn-secondary" id="cancelBtn">뒤로가기</button>
-					<button type="button" class="btn btn-primary" id="writeBtn">등록</button>
+					<button type="button" class="btn btn-primary" id="writeBtn">수정</button>
 				</div>
 			</div>
 	</div>
