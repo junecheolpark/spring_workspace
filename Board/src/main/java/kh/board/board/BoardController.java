@@ -1,6 +1,7 @@
 package kh.board.board;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -9,11 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-
-import kh.board.file.FileDTO;
-import kh.board.file.FileService;
-import kh.board.member.MemberDTO;
 
 @RequestMapping(value = "/board")
 @Controller
@@ -21,58 +19,55 @@ public class BoardController {
 	@Autowired
 	private BoardService service;
 	@Autowired
-	private FileService fileService;
-	@Autowired
 	private HttpSession session;
-
-	@RequestMapping(value = "/toBoard") // board페이지 요청
-	public String toBoard(Model model) throws Exception {
-		ArrayList<BoardDTO> list = service.selectAll();
+	
+	@RequestMapping(value = "/toBoard")//board페이지 요청
+	public String toBoard(Model model) throws Exception{
+		List<BoardDTO> list = service.selectAll();
 		model.addAttribute("list", list);
 		return "board/board";
 	}
-
-	@RequestMapping(value = "/towrite") // write페이지 요청
-	public String toWrite() {
-
+	
+	@RequestMapping(value = "/toDetail") // 상세보기 페이지 요청
+	public String toDetail(int seq_board, Model model) throws Exception{
+		System.out.println("seq_board : " + seq_board);
+		Map<String, Object> map = service.selectOne(seq_board);
+		System.out.println( map.get("boardDTO") );
+		System.out.println( map.get("fileList") );
+		model.addAttribute("map", map);
+		return "board/detail";
+	}
+	
+	@RequestMapping(value = "/toWrite")//write페이지 요청
+	public String toWrite(){
 		return "board/write";
 	}
-
-	@RequestMapping(value = "/write") // 게시글 작성
-	public String write(BoardDTO dto, FileDTO filedto, MultipartFile file) throws Exception {
-
-		int rs = service.insert(dto);
-		if (rs > 0) {// 성공했다면 마지막 시퀀스번호로 file insert
-			System.out.println(filedto.toString());
-			System.out.println("file : " + file);
-			String realPath = session.getServletContext().getRealPath("profile");
-			String content_image = service.uploadProfile(file, realPath);
-			filedto.setContent_image(content_image);
-
-			fileService.file_insert(filedto);
-		}
-
-		return "redirect:/member/toWelcome";
+	
+	@RequestMapping(value = "/write") // 게시글 작성 요청
+	public String write(BoardDTO dto, MultipartFile[] files) throws Exception{
+		System.out.println(dto.toString());
+		// boardDTO 저장 / File 업로드 / fileDTO 저장
+		String path = session.getServletContext().getRealPath("board");
+		service.insert(dto, path, files);
+		return "redirect:/board/toBoard";
 	}
-
-	@RequestMapping(value = "/detail") // detail페이지 요청
-	public String write(String title, int seq_board, Model model) throws Exception {
-		System.out.println(seq_board);
-		service.veiw_countUp(title);
-		BoardDTO dto = service.detailView(title);
-		model.addAttribute("dto", dto);
-		System.out.println(dto);
-		ArrayList<FileDTO> list = fileService.look_img(seq_board);
-		System.out.println(list);
-		model.addAttribute("filelist", list);
-		
-
-		return "/board/detail";
+	
+	@RequestMapping(value = "/modify")// 게시글 수정 요청
+	public String modify(BoardDTO dto, MultipartFile[] files, @RequestParam(value="deleteFileList[]") String[] deleteFileList) throws Exception{
+		String path = session.getServletContext().getRealPath("board");	
+		service.modify(dto, path, files, deleteFileList);
+		return "redirect:/board/toDetail?seq_board="+dto.getSeq_board();
 	}
-
-	@ExceptionHandler
+	
+	@RequestMapping(value = "/delete") 
+	public String delete(int seq_board) throws Exception{ // 게시글 삭제 요청
+		System.out.println("seq_board : " + seq_board);
+		service.delete(seq_board);
+		return "redirect:/board/toBoard";
+	}
+	
+	@ExceptionHandler // 에러 처리
 	public String toError(Exception e) {
-		System.out.println("예외 발생");
 		e.printStackTrace();
 		return "redirect:/toError";
 	}

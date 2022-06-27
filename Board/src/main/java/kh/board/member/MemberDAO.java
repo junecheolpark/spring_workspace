@@ -13,14 +13,68 @@ public class MemberDAO {
 	@Autowired
 	private BasicDataSource bds;
 
-	public MemberDAO() {
-		System.out.println("Message DAO 인스턴스 생성");
+	// 로그인 유효성 검사
+	public MemberDTO login(String id, String pw) throws Exception {
+		String sql = "select * from member where id=? and pw=?";
+		try(Connection con = bds.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql)){
+			pstmt.setString(1, id);
+			pstmt.setString(2, pw);
+
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {
+				return new MemberDTO(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5));
+			}
+			return null;
+		}
 	}
 
-	public int insert(MemberDTO dto) throws Exception {
-		String sql = "insert into member values(?,?,?,null,?)";
+	// 아이디 중복확인
+	public boolean checkLogin(String id) throws Exception {
+		String sql = "select count(*) from member where id=?";
+		try(Connection con = bds.getConnection();
+			PreparedStatement pstmt = con.prepareStatement(sql)){
+			pstmt.setString(1, id);
 
-		try (Connection con = bds.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
+			ResultSet rs = pstmt.executeQuery();
+			rs.next();
+			int result = rs.getInt(1);
+			if(result == 1) return false; // 중복 아이디라면 false 반환
+			else return true;// 사용가능 아이디라면 true 반환
+		}
+	}
+
+	// 프로필 수정
+	public int modifyProfile(MemberDTO dto) throws Exception{
+		String sql = "update member set profile_message=?, profile_image=? where id=?";
+		try(Connection con = bds.getConnection();
+			PreparedStatement pstmt = con.prepareStatement(sql)){
+			
+			pstmt.setString(1, dto.getProfile_message());
+			pstmt.setString(2, dto.getProfile_image());
+			pstmt.setString(3, dto.getId());
+			return pstmt.executeUpdate();			
+		}
+	}
+	
+	// 정보 수정
+	public int modifyInfo(String id, String nickname) throws Exception {
+		String sql = "update member set nickname=? where id=?";
+		try(Connection con = bds.getConnection();
+			PreparedStatement pstmt = con.prepareStatement(sql)){
+			pstmt.setString(1, nickname);
+			pstmt.setString(2, id);
+
+			return pstmt.executeUpdate();
+		}
+	}
+
+	// 회원가입
+	public int insert(MemberDTO dto) throws Exception{
+		String sql = "insert into member values(?,?,?,null,?)";
+		try(Connection con = bds.getConnection();
+				PreparedStatement pstmt = con.prepareStatement(sql)){
+
 			pstmt.setString(1, dto.getId());
 			pstmt.setString(2, dto.getPw());
 			pstmt.setString(3, dto.getNickname());
@@ -28,72 +82,5 @@ public class MemberDAO {
 
 			return pstmt.executeUpdate();
 		}
-	}
-
-	// 아이디 중복체크
-	public boolean checkID(String user_id) throws Exception {
-		String sql = "select count(*) from member where id = ?";
-
-		try (Connection con = bds.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
-
-			pstmt.setString(1, user_id);
-			ResultSet rs = pstmt.executeQuery();
-
-			int result = 0;
-			if (rs.next()) {
-				result = rs.getInt(1);
-			}
-			if (result == 0) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-	}
-
-	// 로그인체크
-	public MemberDTO login(String id, String pw) throws Exception {
-		String sql = "select * from member where id = ? and pw = ?";
-
-		try (Connection con = bds.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
-
-			pstmt.setString(1, id);
-			pstmt.setString(2, pw);
-			ResultSet rs = pstmt.executeQuery();
-
-			if (rs.next()) {
-				String nickname = rs.getString("nickname");
-				String profile_message = rs.getString("profile_message");
-				String profile_image = rs.getString("profile_image");
-				MemberDTO dto = new MemberDTO(id, pw, nickname, profile_message, profile_image);
-				return dto;
-			}
-			return null;
-		}
-	}
-
-	// 프로필 수정
-	public int modifyProfile(MemberDTO dto) throws Exception {
-		String sql = "update member set profile_message=?, profile_image= ? where id=?";
-		try (Connection con = bds.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
-
-			pstmt.setString(1, dto.getProfile_message());
-			pstmt.setString(2, dto.getProfile_image());
-			pstmt.setString(3, dto.getId());
-			return pstmt.executeUpdate();
-		}
-
-	}
-
-	// 닉네임 수정
-	public int modify_nickname(MemberDTO dto) throws Exception {
-		String sql = "update member set nickname=? where id=?";
-		try (Connection con = bds.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
-
-			pstmt.setString(1, dto.getNickname());
-			pstmt.setString(2, dto.getId());
-			return pstmt.executeUpdate();
-		}
-
 	}
 }
