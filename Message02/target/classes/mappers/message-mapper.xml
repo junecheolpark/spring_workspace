@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- mapper 파일 : DB에 접근해서 실행할 쿼리문을 모아 둔 파일 
+	쿼리문에게 id 값을 부여 -> dao가 참조할 이름
+	
+	하나의 mapper파일에서 작성하는 모든 쿼리문은 <mapper> 태그 안쪽에 정의
+	<mapper>의 namespace : 해당 매퍼파일을 참조하기 위한 이름 
+	
+	쿼리문의 종류에 따라 4가지로 나눠 태그자를 사용
+	<insert>
+	<delete>
+	<update>
+	<select>
+	
+	-> 쿼리문의 태그자의 속성
+	id : dao 에서 쿼리문을 호출하기 위해 사용하는 이름
+	parameterType : 인자값의 자료형을 명시 
+	-> 만약 인자값이 객체의 형태라면 parameterType에 반드시 자료형을 명시(패키지명까지 입력)
+	-> 기본자료형이 인자값으로 넘어올때는 parameterType 을 명시하지 않아도 됨. 
+	resultType : 반환값의 자료형을 명시 
+	
+	쿼리문 작성할때 문장의 끝에 ;은 절대 넣지 말기 -> 에러남
+	
+	-> 쿼리문에 넘겨받은 데이터를 셋팅하는 방법
+	1. #{변수}
+	: 인자값이 String 값으로 들어 옴.
+	-> PreparedStatement 는 인자값을 문자열로 셋팅 (sql injection 예방)
+	
+	2. ${변수}
+	: 인자값을 셋팅하려는 컬럼의 자료형에 맞춰서 자동으로 인자값의 자료형이 변환
+	-> Statement 객체와 유사 (sql injection 예방 X)
+	-> 테이블명이나 컬럼명을 동적으로 셋팅해주는 경우 사용
+-->
+<mapper namespace="messageMapper">
+	<!--  메세지 저장 -->
+	<insert id="insert" parameterType="kh.message.dto.MessageDTO">
+		insert into msg
+			values(seq_msg.nextval, #{nickname}, #{message})
+	</insert>
+	
+	<!--  하나의 메세지 조회 -->
+	<!--  resultType에 DTO타입을 명시하게 되면 DTO클래스가 가지고 있는 setter/인자값 받는 생성자 등을
+	활용하여 컬럼명과 동일한 멤버필드에 값을 셋팅해주게 된다.  -->
+	<select id="selectOne" parameterType="int" resultType="kh.message.dto.MessageDTO">
+		select * from msg
+			where no = #{no}
+	</select>
+	
+	<!-- 전체 메세지 조회 
+		다중행의 데이터를 반환하는 경우 resultType은 한행의 데이터를 받아줄 수 있는 자료형으로
+		구성해두고 dao에서 selectList 메서드를 사용하면 알아서 resultType형 List로
+		조회된 데이터를 반환해줌.-->
+	<select id="selectList" resultType="kh.message.dto.MessageDTO">
+		select * from msg
+	</select>
+	
+	<update id="update" parameterType="kh.message.dto.MessageDTO">
+		update msg set
+			nickname = #{nickname}
+			, message = #{message}
+		where no = #{no}
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		delete from msg where no = #{no}
+	</delete>
+</mapper>

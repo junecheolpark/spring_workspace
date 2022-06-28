@@ -3,6 +3,7 @@
 <aop-project name="Student"/>
 <aop-project name="Board"/>
 <aop-project name="SpringIntro"/>
+<aop-project name="Message02"/>
 <aop-project name="Intro"/>
 <aop-project name="Message"/>
 <aop-project name="BoardSam"/>

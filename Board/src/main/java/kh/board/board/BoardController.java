@@ -50,7 +50,7 @@ public class BoardController {
 		String path = session.getServletContext().getRealPath("board");
 		service.insert(dto, path, files);
 		return "redirect:/board/toBoard";
-	}
+	} 
 	
 	@RequestMapping(value = "/modify")// 게시글 수정 요청
 	public String modify(BoardDTO dto, MultipartFile[] files, @RequestParam(value="deleteFileList[]") String[] deleteFileList) throws Exception{

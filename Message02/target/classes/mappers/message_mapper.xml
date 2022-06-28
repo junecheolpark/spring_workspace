@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- mapper 파일 : DB에 접근해서 실행할 쿼리문을 모아 둔 파일
+쿼리문에게 id값을 부여 -> dao가 참조할 이름
+
+하나의 mapper파일에서 작성하는 모든 쿼리문은 <mapper> 태그 안쪽에 정의
+<mapper>의 anmespace : 해당 매퍼파일을 참조하기 위한이름
+
+쿼리문의 종류에 따라 4가지로 나눠 태그자를 사용
+<insert>
+<delete>
+<update>
+<select>
+
+-> 쿼리문의 태그자의 속성
+id : dao 에서 쿼리문을 호출하기위해 사용하는 이름
+parameterType : 인자값의 자료형을 명시
+-> 만약 인자값이 객체의 형태라면 parameterType에 반드시 자료형을 명시(패키지명까지 입력)
+-> 자료형이 인자값으로 넘어올때는 parameterType 을 명시하지 ㅏㄶ아도 됨.
+resultType: 반환값의 자료형을 명시
+쿼리문 작성할떄 문장의 끝에 ;은 절대 넣지 말것 -> 에러남
+
+-> 쿼리문에 넘겨받은 데이터를 셋팅하는 방법
+1. #(변수)
+: 인자값이 String ㄱ값으로 들어옴
+-> PreparedStatement는 인자값을 문자형으로 셋팅(sql injection 예방)
+2. $(변수)
+: 인작밧을 셋팅하려는 컬럼의 자료형에 맞춰서 자동으로 인자값의 자료형이 변환
+-> Statement 객체와 유사 (sql injection 예방x)
+-> 테이블 명이나 컬럼명을 동적으로 셋팅해주는 경우 사용
+ -->
+ <mapper namespace="messageMapper" >
+ 	<insert id="insert" parameterTpye="kh.message.dto.MessageDTO">
+ 		insert into msg
+ 			values(seq_msg.naextval, #{nickname}, #{message})
+ 	</insert>
+ </mapper>
