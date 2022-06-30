@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import kh.message.dto.MessageDTO;
 import kh.message.service.MessageService;
@@ -64,6 +65,41 @@ public class HomeController {
 		service.delete(no);
 		return "redirect:/toOutputList";
 	}
+	
+	@RequestMapping(value = "/search1")// 닉네임으로 검색 요청
+	@ResponseBody
+	public List<MessageDTO> search1(String keyword) throws Exception{
+		System.out.println("keyword : " + keyword);
+		List<MessageDTO> list = service.search1(keyword);
+		System.out.println(list.size());
+		return list;
+	}
+	
+	@RequestMapping(value = "/search2")// select 원하는 카테고리 + 키워드 검색
+	@ResponseBody
+	public List<MessageDTO> search2(String category, String keyword) throws Exception{
+		System.out.println("category : " + category);
+		System.out.println("keyword : " + keyword);
+		
+		List<MessageDTO> list = service.search2(category, keyword);
+		return list;
+	}
+	
+	@RequestMapping(value = "/search3")// checkbox로 카테로기 + 키워드 검색
+	@ResponseBody
+	public List<MessageDTO> search3(String no, String nickname, String message, String keyword) throws Exception{
+		System.out.println("no : " + no);
+		System.out.println("nickname : " + nickname);
+		System.out.println("message : " + message);
+		System.out.println("keyword : " + keyword);
+		List<MessageDTO> list = service.search3(no, nickname, message, keyword);
+		return list;
+	}
+	
+	
+	
+	
+	
 	
 
 	@RequestMapping(value= "/toError") // 에러페이지로 이동

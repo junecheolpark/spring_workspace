@@ -37,4 +37,23 @@ public class MessageService {
 	public void delete(int no) throws Exception{
 		dao.delete(no);
 	}
+	
+	// 검색 ver1
+	public List<MessageDTO> search1(String keyword) throws Exception{
+		return dao.search1(keyword);
+	}
+	
+	// 검색 ver2
+	public List<MessageDTO> search2(String category, String keyword) throws Exception{
+		return dao.search2(category, keyword);
+	}
+	
+	// 검색 ver3
+	public List<MessageDTO> search3(String no, String nickname, String message, String keyword) throws Exception{
+		return dao.search3(no, nickname, message, keyword);
+	}
+	
+	
+	
+	
 }

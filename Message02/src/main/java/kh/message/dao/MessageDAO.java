@@ -1,6 +1,8 @@
 package kh.message.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,30 @@ public class MessageDAO {
 	public void update(MessageDTO dto) throws Exception{// 메세지 수정
 		session.update("messageMapper.update", dto);
 	}
+	
+	public List<MessageDTO> search1(String keyword) throws Exception{// 검색 ver1
+		return session.selectList("messageMapper.search1", keyword);
+	}
+	
+	public List<MessageDTO> search2(String category, String keyword) throws Exception{// 검색 ver2
+		// session 이 가지고 있는 메서드에게 넘겨줘야 하는 두번째 인자값은 하나의 값으로만 넘겨줘야 하기 때문에
+		// key값을 그대로 들고 갈 수 있는 맵을 하나 만들어 우리가 넘겨줄 데이터를 담아 map자체를 넘겨준다. 
+		Map<String, String> map = new HashMap<>();
+		map.put("category", category);
+		map.put("keyword", keyword);
+		
+		return session.selectList("messageMapper.search2", map);
+	}
+	
+	public List<MessageDTO> search3(String no, String nickname, String message, String keyword) throws Exception{// 검색ver3
+		Map<String, String> map = new HashMap<>();
+		map.put("no", no);
+		map.put("nickname", nickname);
+		map.put("message", message);
+		map.put("keyword", keyword);
+		return session.selectList("messageMapper.search3", map);
+	}
+	
 	
 	
 }

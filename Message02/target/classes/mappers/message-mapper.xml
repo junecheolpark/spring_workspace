@@ -67,4 +67,158 @@
 	<delete id="delete" parameterType="int">
 		delete from msg where no = #{no}
 	</delete>
+
+
+	<!-- 검색 ver1 -->
+	<select id="search1" parameterType="string" resultType="kh.message.dto.MessageDTO">
+		select * from msg
+			where nickname like '%' || #{keyword} || '%'
+	</select>
+	
+	<!-- 검색 ver2 
+		map형으로 인자값을 받을때는 그 map안에 셋팅된 key값을 변수명으로 하여 값을 꺼내 씀.
+		if test-> 조건문 안에는 dao에서 넘겨주는 변수명/키값을 그대로 사용함.
+		 -->
+	<select id="search2" parameterType="map" resultType="kh.message.dto.MessageDTO">
+		select * from msg where 
+			<if test="category == 'all'">
+				no like '%' || #{keyword} || '%'
+				or nickname like '%' || #{keyword} || '%'
+				or message like '%' || #{keyword} || '%'
+			</if>
+			<if test="category != 'all'">
+				${category} like '%' || #{keyword} || '%'
+			</if>
+	</select>
+	<!-- 
+		all 전체를 선택했다면
+		select * from msg 
+			where no like '%' || #{keyword} || '%'
+			or nickname like '%' || #{keyword} || '%'
+			or message like '%' || #{keyword} || '%'
+	
+		select * from msg where no like '%' || #{keyword} || '%'
+		select * from msg where nickname like '%' || #{keyword} || '%'
+		select * from msg where message like '%' || #{keyword} || '%'
+	 -->
+
+
+	<!--  만약  nickname 이 null이거나 '' 이라면?
+	
+	update msg set
+		<trim prefixOverrides=",">
+			<if test="nickname != null and nickname != ''">
+				nickname = #{nickname}
+			</if>
+			<if test="message != null and message != ''">
+				, message = #{message}
+			</if>	
+		</trim>
+	where no = #{no}
+	
+	만약 닉네임만 변경하는 경우
+	update msg set nickname = #{nickname} where no = #{no}
+	닉네임 + 메세지 모두 변경하는 경우
+	update msg set nickname = #{nickname}, message = #{message} where no = #{no}
+	메세지만 변경하는 경우
+	update msg set ,message = #{message} where no = #{no}
+	
+	
+	update msg
+		<trim prefix="set" suffixOverrides="," suffix="where">
+			<if test="nickname != null and nickname != ''">
+				nickname = #{nickname}, 
+			</if>
+			<if test="message != null and message != ''">
+				message = #{message}
+			</if>	
+		</trim>
+	no = #{no}	
+	
+	닉네임만 변경하는 경우
+	update msg nickname = #{nickname}, no = #{no}
+	메세지만 변경하는 경우
+	update msg message = #{message} no = #{no}
+	둘다 변경하는 경우
+	update msg nickname = #{nickname}, message = #{message} no = #{no}
+
+
+
+	-->
+	<!-- 검색 ver3 -->
+	<!-- mybatis 에서 문자열 빈값 여부 비교할때는 
+		null 그리고 ''를 모두 크로스체크 -->
+	<select id="search3" parameterType="map" resultType="kh.message.dto.MessageDTO">
+		select * from msg
+			<trim prefix="where " prefixOverrides="or">
+				<if test="no != null and no != ''"> <!-- 번호를 선택한 경우 -->
+					no like '%' || #{keyword} || '%'
+				</if>
+				<if test="nickname != null and nickname != ''"><!-- 닉네임을 선택한 경우 -->
+					or nickname like '%' || #{keyword} || '%'
+				</if>
+				<if test="message != null and message != ''"><!-- 내용을 선택한 경우 -->
+					or message like '%' || #{keyword} || '%'
+				</if>
+			</trim>
+	</select>
+	<!-- 
+	<trim prefix="" prefixOverrides="" suffix="" suffixOverrides="">
+	</trim>
+	: <trim>태그 안쪽의 if문이 true라고 한다면 trim 이 실행이 되고 false라고 한다면 아예 실행 X
+	-> 안쪽의 if문이 실행된다면 내가 미리 설정해둔 문자열을 쿼리문에 동적으로 추가하거나 
+	   쿼리문에서 동적으로 삭제하는 것이 가능
+	
+	1. prefix 접두사 : 쿼리문 가장 앞쪽에다 prefix 속성에 준 문자열을 붙여줄 수 있음
+	2. prefixOverrides 접두사 제거 : 쿼리문 가장 앞쪽에 있는 문자열을 제거해주는 속성
+	3. suffix 접미사 : 쿼리문의 가장 뒤쪽에다 문자열을 붙여줄 수 있음
+	4. suffixOverrides 접미사 제거 : 쿼리문 가장 뒤쪽의 문자열을 제거해주는 속성
+	
+	
+	case5. 닉네임만 선택했을 경우 X
+	select * from msg 
+		or nickname like '%' || #{keyword} || '%'
+		
+	case6. 닉네임 + 메세지 선택했을 경우 X
+	select * from msg
+		or nickname like '%' || #{keyword} || '%'
+		or message like '%' || #{keyword} || '%'
+	
+	case7. 내용만 선택했을 경우
+	select * from msg  
+		or message like '%' || #{keyword} || '%'
+	
+	
+	case1. 전체를 선택했을 경우 OK
+	select * from msg 
+		no like '%' || #{keyword} || '%'
+		or nickname like '%' || #{keyword} || '%'
+		or message like '%' || #{keyword} || '%'
+		
+	case2. 번호만 선택했을 경우 OK
+	select * from msg 
+		no like '%' || #{keyword} || '%'
+	
+	case3. 번호 + 닉네임을 선택한 경우 OK
+	select * from msg
+		no like '%' || #{keyword} || '%'
+		or nickname like '%' || #{keyword} || '%'
+		
+	case4. 번호 + 메세지를 선택한 경우
+	select * from msg 
+		no like '%' || #{keyword} || '%'
+		or message like '%' || #{keyword} || '%'
+		
+	
+	 -->
+
+
+
+
+
+
+
+
+
+
 </mapper>
