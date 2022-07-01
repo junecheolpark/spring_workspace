@@ -1,12 +1,14 @@
 package kh.message.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kh.message.dto.MessageDTO;
@@ -46,6 +48,14 @@ public class HomeController {
 		model.addAttribute("list", list);
 		return "outputList";
 	}
+	@RequestMapping(value = "/toOutputJoin") // 모든 메세지 가져오기
+	public String toOutputJoin(Model model) throws Exception{
+
+		List<Map<String, Object>> list = service.seleteJoin();
+		System.out.println(list);
+		model.addAttribute("list",list);
+		return "ouputJoin";
+	}
 	
 	@RequestMapping(value = "/toModify")//메세지 수정 페이지 요청
 	public String toModify(int no, Model model) throws Exception{
@@ -63,6 +73,16 @@ public class HomeController {
 	@RequestMapping(value = "/delete")//메시지 삭제 요청
 	public String delete(int no) throws Exception{
 		service.delete(no);
+		return "redirect:/toOutputList";
+	}
+	
+	@RequestMapping(value = "/deleteChecked")//메시지 삭제 요청
+	@ResponseBody
+	public String deleteChecked(@RequestParam(value="no[]") int[] no) throws Exception{
+		for(int n : no) {
+			System.out.println(n);
+		}
+		service.deleteChecked(no);
 		return "redirect:/toOutputList";
 	}
 	

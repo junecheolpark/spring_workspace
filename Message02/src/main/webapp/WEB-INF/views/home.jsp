@@ -9,6 +9,7 @@
 	<button type="button" id="toInput">toInput</button>
 	<button type="button" id="toOutputDTO">toOutputDTO</button>
 	<button type="button" id="toOutputList">toOutputList</button>
+	<button type="button" id="toOutputJoin">toOutputJoin</button>
 	<!-- toInput버튼을 클릭했을 때는 클라이언트가 input.jsp 페이지를 응답
 		toOutput버튼을 클릭했을 때는 output.jsp 페이지를 응답
 	 -->
@@ -22,6 +23,9 @@
 		}
 		document.getElementById("toOutputList").onclick = function(){
 			location.href = "/toOutputList";
+		}
+		document.getElementById("toOutputJoin").onclick = function(){
+			location.href = "/toOutputJoin";
 		}
 	</script>
 </body>

@@ -1,6 +1,7 @@
 package kh.message.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,11 @@ public class MessageService {
 	// 메세지 저장
 	public void insert(MessageDTO dto) throws Exception{
 		dao.insert(dto);
+	}
+	
+	// 조인된 테이블 데이터 조회
+	public List<Map<String, Object>> seleteJoin() throws Exception{
+		return dao.selectJoin();
 	}
 	
 	// no를 넘겨받아 해당 데이터를 가져오는 메서드
@@ -38,6 +44,9 @@ public class MessageService {
 		dao.delete(no);
 	}
 	
+	public void deleteChecked(int[] no) throws Exception{
+		dao.deleteChecked(no);
+	}
 	// 검색 ver1
 	public List<MessageDTO> search1(String keyword) throws Exception{
 		return dao.search1(keyword);

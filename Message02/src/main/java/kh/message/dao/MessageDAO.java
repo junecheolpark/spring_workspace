@@ -25,6 +25,11 @@ public class MessageDAO {
 		// insert("매퍼의이름.쿼리문의id", 넘겨주는 데이터) 넘겨주는 인자값 2개
 		// 넘겨주는 데이터는 해당 쿼리문이 가지고 있는 parameterType과 일치하는 자료형
 		session.insert("messageMapper.insert", dto);
+		System.out.println("no:" + dto.getNo());
+	}
+	
+	public List<Map<String, Object>> selectJoin() throws Exception{
+		return session.selectList("messageMapper.selectJoin");
 	}
 	
 	public MessageDTO selectOne(int no) throws Exception{ // 하나의 메세지 조회
@@ -37,6 +42,15 @@ public class MessageDAO {
 	
 	public void delete(int no) throws Exception{// 메세지 삭제
 		session.delete("messageMapper.delete", no);
+	}
+	
+	public void deleteChecked(int[] no) throws Exception{
+		// 1. 가지고 있는 배열/리스트를 mapper의 쿼리문에 그대로 넘기는 경우
+		// session.delete("messageMapper.deleteChecked", no);
+		//2. 갖고있는ㅂ ㅐ열/리스트에 key값을 부여해 넘기는 경우
+		Map<String, Object> map = new HashMap<>();
+		map.put("deleteArr", no);
+		session.delete("messageMapper.deleteChecked", no);
 	}
 	
 	public void update(MessageDTO dto) throws Exception{// 메세지 수정

@@ -35,11 +35,36 @@
 	-> 테이블명이나 컬럼명을 동적으로 셋팅해주는 경우 사용
 -->
 <mapper namespace="messageMapper">
+	<!-- <selesetKey></selectKey>
+		order :selectKey 태그가 들어있는 구문을 수행하기 전에 추출해오고자 하는 값을 가져올건지
+		혹은 쿼리문이 실행된 후에 값을 가져올건지 여부에 대한 속성
+		BEFORE / AFTER
+		keyProperty : selectKey가 실행되고 난 결과값을 저장할 변수명
+		resultType : selectKey안의 구문이 실행됐을때 반환받을 데이터의 타입
+	 -->
+
 	<!--  메세지 저장 -->
 	<insert id="insert" parameterType="kh.message.dto.MessageDTO">
+		<!-- <selectKey order="BEFORE" keyProperty="no" resultType="int">
+			select seq_msg.nextval from dual
+		</selectKey> -->
 		insert into msg
 			values(seq_msg.nextval, #{nickname}, #{message})
+			<selectKey order="AFTER" keyProperty="no" resultType="int">
+				select seq_msg.currval from dual
+			</selectKey>
 	</insert>
+	
+	<!-- 조인된 테이블의 데이터 조회 
+	commonse collections 라이브러리를 통해 자동 소문자 번역-->
+	<select id="selectJoin" resultType="org.apache.commons.collections4.map.CaseInsensitiveMap">
+		select nickname, message, address, phone
+   			 from msg join member using(nickname)
+	</select>
+<!-- 	<select id="selectJoin" resultType="map"> 대문자로나옴
+		select nickname, message, address, phone
+   			 from msg join member using(nickname)
+	</select> -->
 	
 	<!--  하나의 메세지 조회 -->
 	<!--  resultType에 DTO타입을 명시하게 되면 DTO클래스가 가지고 있는 setter/인자값 받는 생성자 등을
@@ -54,7 +79,7 @@
 		구성해두고 dao에서 selectList 메서드를 사용하면 알아서 resultType형 List로
 		조회된 데이터를 반환해줌.-->
 	<select id="selectList" resultType="kh.message.dto.MessageDTO">
-		select * from msg
+		select * from msg order by 1
 	</select>
 	
 	<update id="update" parameterType="kh.message.dto.MessageDTO">
@@ -66,6 +91,34 @@
 	
 	<delete id="delete" parameterType="int">
 		delete from msg where no = #{no}
+	</delete>
+	
+	<!-- dao로부터 배열/리스트가 있는값 그대로 넘어오는경우 (메세지 선택) -->
+	<!-- foreach (dao에서 배열 혹은 리스트가 넘어오는 경우에만 사용할 수 있음 
+	
+	collection : dao로부터 넘어오는 배열/리스트 이름
+	-> dao에서 배열이나 리스트 한테 별도의 이름(key)을 붙여주지 않고 배열/리스트 그대로 넘겨주는 경우에는
+	array/ list 라는 별칭을사용
+	(jstl forEach문의 item과 같은 역할)
+	
+	item : 배열이나 리스트를 반목문 돌리며 각자 인덱스에 있는 값을 담아줄 변수
+	(jstl forEach문의 var와 같은 역할)
+	
+	open: prefix 처럼 반복되는 구문의 가장 앞쪽에 특정 문다열을 추가
+	close : suffix 처럼 반복되는 구문의 가장 뒤쪽에 특정 문자열을 추가
+	sㅁperator : 한번 박복한 후 뒤에 또 반복이 이어진다면
+	-->
+	
+	<!-- 2.. key값을 가지고 배열/리스트를 넘겨받는 경우
+	collection: 속성값에 반드시 넘어오는 key값을 사용해서 데이터를 받아줘야 함 -->
+	
+	<delete id ="deleteChecked" parameterType="int">
+		delete from msg
+			where no in
+				<!-- 값이 없으면" array "-->
+				<foreach collection="ㅇ딛ㅅㄷㅁㄱㄱ" item="num" open="(" close=")" separator=",">
+					${num}
+				</foreach>
 	</delete>
 
 

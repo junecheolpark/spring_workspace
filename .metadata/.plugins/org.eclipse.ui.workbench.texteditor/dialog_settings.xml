@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="message2"/>
+		<item key="selection" value="SqlSession"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="SqlSession"/>
+			<item value="selectList"/>
 			<item value="message2"/>
 			<item value="DAO"/>
 			<item value="oj"/>
@@ -21,8 +23,6 @@
 			<item value="complet_nickname"/>
 			<item value="uploadProfile"/>
 			<item value="toError"/>
-			<item value="welcom"/>
-			<item value="&quot;toLogin&quot;"/>
 		</list>
 		<list key="replacehistory">
 			<item value="laptop"/>
@@ -30,7 +30,7 @@
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item key="DIALOG_X_ORIGIN" value="-345"/>
+		<item key="DIALOG_X_ORIGIN" value="-235"/>
 		<item key="DIALOG_Y_ORIGIN" value="323"/>
 		<item key="DIALOG_WIDTH" value="322"/>
 		<item key="DIALOG_HEIGHT" value="391"/>
