@@ -116,7 +116,7 @@
 		delete from msg
 			where no in
 				<!-- 값이 없으면" array "-->
-				<foreach collection="ㅇ딛ㅅㄷㅁㄱㄱ" item="num" open="(" close=")" separator=",">
+				<foreach collection="deleteArr" item="num" open="(" close=")" separator=",">
 					${num}
 				</foreach>
 	</delete>
