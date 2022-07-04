@@ -45,7 +45,9 @@ public class MemberController {
 	@RequestMapping(value = "/checkLogin") //ID중복검사 요청
 	@ResponseBody	
 	public String checkLogin(String id) throws Exception{
-		if(service.checkLogin(id)) return "available";
+		// checkLogin이 false를 반환하면 사용가능 아이디
+		if(!service.checkLogin(id)) return "available";
+		// checkLogin이 true를 반환하면 중복 아이디
 		else return "unavailable";
 	}
 	

@@ -31,7 +31,6 @@
 		#profile_image {
 			widht: 100%;
 			height: 100%;
-			border-radius: 50%;
 		}
 		
 		#profile_message {
@@ -92,6 +91,9 @@
 			<div class="col p-1">
 				<button type="button" class="btn btn-success w-100" id="toBoard">게시판</button>
 			</div>
+			<div class="col p-1">
+				<button type="button" class="btn btn-info w-100" id="toPublic">공공데이터</button>
+			</div>
 		</div>
 	</div>
 	
@@ -123,6 +125,10 @@
 	</div>
 	
 	<script>
+		// 공공데이터 요청
+		$("#toPublic").click(function(){
+			location.href = "/public/toPublicHome";
+		})
 	
 		// 로그아웃 요청
 		$("#toLogout").click(function(){

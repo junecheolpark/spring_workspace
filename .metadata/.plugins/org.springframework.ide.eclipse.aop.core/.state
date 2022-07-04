@@ -6,5 +6,5 @@
 <aop-project name="Message02"/>
 <aop-project name="Intro"/>
 <aop-project name="Message"/>
-<aop-project name="BoardSam"/>
+<aop-project name="Board_mybatis"/>
 </aop-reference-model>

@@ -18,11 +18,11 @@
 		<form id="loginForm">
 			<div class="mb-3">
 				<label for="id" class="form-label">아이디</label> 
-				<input type="text" class="form-control" id="id" name="id">
+				<input type="text" class="form-control" id="id" name="id" value="abc123">
 			</div>
 			<div class="mb-3">
 				<label for="pw" class="form-label">비밀번호</label>
-				<input type="password" class="form-control" id="pw" name="pw">
+				<input type="password" class="form-control" id="pw" name="pw" value="abc123">
 			</div>
 			<div class="mb-3 form-check d-flex justify-conte-center">
 				<input type="checkbox" class="form-check-input" id="rememberId">

@@ -1,86 +1,45 @@
 package kh.board.member;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class MemberDAO {
 	@Autowired
-	private BasicDataSource bds;
+	private SqlSession session;
 
 	// 로그인 유효성 검사
 	public MemberDTO login(String id, String pw) throws Exception {
-		String sql = "select * from member where id=? and pw=?";
-		try(Connection con = bds.getConnection();
-				PreparedStatement pstmt = con.prepareStatement(sql)){
-			pstmt.setString(1, id);
-			pstmt.setString(2, pw);
-
-			ResultSet rs = pstmt.executeQuery();
-			if(rs.next()) {
-				return new MemberDTO(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),rs.getString(5));
-			}
-			return null;
-		}
+		Map<String, String> map = new HashMap<>();
+		map.put("id", id);
+		map.put("pw", pw);
+		return session.selectOne("memberMapper.login", map);
 	}
 
 	// 아이디 중복확인
 	public boolean checkLogin(String id) throws Exception {
-		String sql = "select count(*) from member where id=?";
-		try(Connection con = bds.getConnection();
-			PreparedStatement pstmt = con.prepareStatement(sql)){
-			pstmt.setString(1, id);
-
-			ResultSet rs = pstmt.executeQuery();
-			rs.next();
-			int result = rs.getInt(1);
-			if(result == 1) return false; // 중복 아이디라면 false 반환
-			else return true;// 사용가능 아이디라면 true 반환
-		}
+		return session.selectOne("memberMapper.checkLogin", id);
 	}
 
 	// 프로필 수정
 	public int modifyProfile(MemberDTO dto) throws Exception{
-		String sql = "update member set profile_message=?, profile_image=? where id=?";
-		try(Connection con = bds.getConnection();
-			PreparedStatement pstmt = con.prepareStatement(sql)){
-			
-			pstmt.setString(1, dto.getProfile_message());
-			pstmt.setString(2, dto.getProfile_image());
-			pstmt.setString(3, dto.getId());
-			return pstmt.executeUpdate();			
-		}
+		return session.update("memberMapper.modifyProfile", dto);
 	}
 	
 	// 정보 수정
 	public int modifyInfo(String id, String nickname) throws Exception {
-		String sql = "update member set nickname=? where id=?";
-		try(Connection con = bds.getConnection();
-			PreparedStatement pstmt = con.prepareStatement(sql)){
-			pstmt.setString(1, nickname);
-			pstmt.setString(2, id);
-
-			return pstmt.executeUpdate();
-		}
+		Map<String, String> map = new HashMap<>();
+		map.put("id", id);
+		map.put("nickname", nickname);
+		return session.update("memberMapper.modifyInfo", map);
 	}
 
 	// 회원가입
 	public int insert(MemberDTO dto) throws Exception{
-		String sql = "insert into member values(?,?,?,null,?)";
-		try(Connection con = bds.getConnection();
-				PreparedStatement pstmt = con.prepareStatement(sql)){
-
-			pstmt.setString(1, dto.getId());
-			pstmt.setString(2, dto.getPw());
-			pstmt.setString(3, dto.getNickname());
-			pstmt.setString(4, dto.getProfile_image());
-
-			return pstmt.executeUpdate();
-		}
+		return session.insert("memberMapper.insert", dto);
 	}
 }
