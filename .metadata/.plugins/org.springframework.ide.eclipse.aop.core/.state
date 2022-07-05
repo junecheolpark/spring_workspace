@@ -8,4 +8,5 @@
 <aop-project name="Message"/>
 <aop-project name="BoardSam"/>
 <aop-project name="Board_mybatis"/>
+<aop-project name="WepChat"/>
 </aop-reference-model>
