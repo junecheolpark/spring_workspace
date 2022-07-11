@@ -20,7 +20,7 @@
 		<property name="dataSource" ref="bds"/>
 		<!-- 2. mapper 세터 주입 -> 실제 등록해주고 싶은 mapper 파일이 위치한 경로값을 value 
 		      classpath:  -> src/main/resource 폴더 안에 ~   -->
-		<property name="mapperLocations" value="classpath:mappers/message-mapper.xml"/>
+		<property name="mapperLocations" value="classpath:mappers/*.xml"/>
 		<!-- mappers 폴더 안에 있는 여러개의 매퍼파일을 등록하고 싶은 경우 아래와 같이 경로를 잡아주면 됨.   	
 		<property name="mapperLocations" value="classpath:mappers/*.xml"/>     -->
 	</bean>
